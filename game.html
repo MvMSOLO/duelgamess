@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Tank Duel</title>
+    <style>
+        body { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #1e1e1e;
+            color: white;
+        }
+        canvas { 
+            border: 1px solid #ffffff;
+            background-color: #000000;
+        }
+        #scoreboard { 
+            margin: 10px;
+            font-size: 20px;
+        }
+        #chat { 
+            width: 300px;
+            height: 150px;
+            overflow-y: scroll;
+            background-color: #333;
+            padding: 5px;
+            border: 1px solid #ffffff;
+        }
+        #chatInput { 
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Neon Tank Duel Arena</h1>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="scoreboard">
+        <span>Player 1: <span id="player1Score">0</span></span> |
+        <span>Player 2: <span id="player2Score">0</span></span>
+    </div>
+    <div id="chat">
+        <div id="chatMessages"></div>
+    </div>
+    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let player1Score = 0;
+        let player2Score = 0;
+
+        function draw() {
+            // Game rendering logic
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Example: Draw tanks (you would replace this with game logic)
+            ctx.fillStyle = 'green';
+            ctx.fillRect(50, 50, 30, 30);
+            ctx.fillStyle = 'red';
+            ctx.fillRect(200, 50, 30, 30);
+        }
+
+        function updateScore() {
+            document.getElementById('player1Score').innerText = player1Score;
+            document.getElementById('player2Score').innerText = player2Score;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value;
+            if (message) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageElement = document.createElement('div');
+                messageElement.innerText = message;
+                chatMessages.appendChild(messageElement);
+                input.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        setInterval(() => {
+            draw();
+            updateScore();
+        }, 1000 / 60); // 60 FPS
+    </script>
+</body>
+</html>
