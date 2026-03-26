@@ -1,96 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Tank Duel</title>
+    <title>Duel Games</title>
     <style>
-        body { 
+        body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0;
-            padding: 0;
+            justify-content: center;
             height: 100vh;
-            background-color: #1e1e1e;
-            color: white;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-        canvas { 
-            border: 1px solid #ffffff;
-            background-color: #000000;
+        canvas {
+            border: 1px solid black;
         }
-        #scoreboard { 
+        #scoreboard, #chat, #gameOver {
             margin: 10px;
-            font-size: 20px;
+            padding: 10px;
+            border: 1px solid black;
+            width: 100%;
+            max-width: 400px;
         }
-        #chat { 
-            width: 300px;
-            height: 150px;
-            overflow-y: scroll;
-            background-color: #333;
-            padding: 5px;
-            border: 1px solid #ffffff;
-        }
-        #chatInput { 
-            width: 300px;
+        #gameOver {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Neon Tank Duel Arena</h1>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="scoreboard">
-        <span>Player 1: <span id="player1Score">0</span></span> |
-        <span>Player 2: <span id="player2Score">0</span></span>
-    </div>
+    <div id="scoreboard">Score: <span id="score">0</span></div>
     <div id="chat">
-        <div id="chatMessages"></div>
+        <input type="text" id="chatInput" placeholder="Type a message...">
+        <button id="sendBtn">Send</button>
+        <div id="chatLog"></div>
     </div>
-    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <div id="gameOver">
+        <h2>Game Over</h2>
+        <button id="replayBtn">Play Again</button>
+    </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let player1Score = 0;
-        let player2Score = 0;
+        let score = 0;
+        let gameInterval;
+        let isGameOver = false;
 
-        function draw() {
-            // Game rendering logic
+        function startGame() {
+            score = 0;
+            isGameOver = false;
+            document.getElementById('gameOver').style.display = 'none';
+            gameInterval = setInterval(updateGame, 1000/60);
+        }
+
+        function updateGame() {
+            if (isGameOver) return;
+            // Game logic and rendering here
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Example: Draw tanks (you would replace this with game logic)
-            ctx.fillStyle = 'green';
-            ctx.fillRect(50, 50, 30, 30);
-            ctx.fillStyle = 'red';
-            ctx.fillRect(200, 50, 30, 30);
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(50, 50, 100, 100); // Example player
+            ctx.fillStyle = 'black';
+            ctx.fillText('Score: ' + score, 10, 20);
         }
 
-        function updateScore() {
-            document.getElementById('player1Score').innerText = player1Score;
-            document.getElementById('player2Score').innerText = player2Score;
+        function endGame() {
+            isGameOver = true;
+            clearInterval(gameInterval);
+            document.getElementById('gameOver').style.display = 'block';
         }
 
-        function sendMessage() {
+        document.getElementById('sendBtn').addEventListener('click', function() {
             const input = document.getElementById('chatInput');
-            const message = input.value;
-            if (message) {
-                const chatMessages = document.getElementById('chatMessages');
-                const messageElement = document.createElement('div');
-                messageElement.innerText = message;
-                chatMessages.appendChild(messageElement);
-                input.value = '';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        }
+            const chatLog = document.getElementById('chatLog');
+            chatLog.innerHTML += '<div>' + input.value + '</div>';
+            input.value = '';
+        });
 
-        document.getElementById('chatInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
+        document.getElementById('replayBtn').addEventListener('click', startGame);
+
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowUp') {
+                // Move player up
+            } else if (event.key === 'ArrowDown') {
+                // Move player down
             }
         });
 
-        setInterval(() => {
-            draw();
-            updateScore();
-        }, 1000 / 60); // 60 FPS
+        startGame();
     </script>
 </body>
 </html>
